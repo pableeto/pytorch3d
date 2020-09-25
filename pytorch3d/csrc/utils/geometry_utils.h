@@ -193,9 +193,10 @@ inline vec3<T> BarycentricPerspectiveCorrectionForward(
   const T w1_top = bary.y * z0 * z2;
   const T w2_top = bary.z * z0 * z1;
   const T denom = w0_top + w1_top + w2_top;
-  const T w0 = w0_top / denom;
-  const T w1 = w1_top / denom;
-  const T w2 = w2_top / denom;
+  const T eps = 1e-6;
+  const T w0 = w0_top / (denom + eps);
+  const T w1 = w1_top / (denom + eps);
+  const T w2 = w2_top / (denom + eps);
   return vec3<T>(w0, w1, w2);
 }
 
@@ -228,10 +229,11 @@ inline std::tuple<vec3<T>, T, T, T> BarycentricPerspectiveCorrectionBackward(
   // Now do backward pass
   const T grad_denom_top =
       -w0_top * grad_out.x - w1_top * grad_out.y - w2_top * grad_out.z;
-  const T grad_denom = grad_denom_top / (denom * denom);
-  const T grad_w0_top = grad_denom + grad_out.x / denom;
-  const T grad_w1_top = grad_denom + grad_out.y / denom;
-  const T grad_w2_top = grad_denom + grad_out.z / denom;
+  const T eps = 1e-6;
+  const T grad_denom = grad_denom_top / (denom * denom + eps);
+  const T grad_w0_top = grad_denom + grad_out.x / (denom + eps);
+  const T grad_w1_top = grad_denom + grad_out.y / (denom + eps);
+  const T grad_w2_top = grad_denom + grad_out.z / (denom + eps);
   const T grad_bary_x = grad_w0_top * z1 * z2;
   const T grad_bary_y = grad_w1_top * z0 * z2;
   const T grad_bary_z = grad_w2_top * z0 * z1;
