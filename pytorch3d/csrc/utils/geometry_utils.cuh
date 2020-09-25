@@ -172,9 +172,10 @@ __device__ inline float3 BarycentricPerspectiveCorrectionForward(
   const float w1_top = z0 * bary.y * z2;
   const float w2_top = z0 * z1 * bary.z;
   const float denom = w0_top + w1_top + w2_top;
-  const float w0 = w0_top / denom;
-  const float w1 = w1_top / denom;
-  const float w2 = w2_top / denom;
+  const float eps = 1e-6;
+  const float w0 = w0_top / (denom + eps);
+  const float w1 = w1_top / (denom + eps);
+  const float w2 = w2_top / (denom + eps);
   return make_float3(w0, w1, w2);
 }
 
@@ -207,10 +208,11 @@ BarycentricPerspectiveCorrectionBackward(
   // Now do backward pass
   const float grad_denom_top =
       -w0_top * grad_out.x - w1_top * grad_out.y - w2_top * grad_out.z;
-  const float grad_denom = grad_denom_top / (denom * denom);
-  const float grad_w0_top = grad_denom + grad_out.x / denom;
-  const float grad_w1_top = grad_denom + grad_out.y / denom;
-  const float grad_w2_top = grad_denom + grad_out.z / denom;
+  const float eps = 1e-6;
+  const float grad_denom = grad_denom_top / (denom * denom + eps);
+  const float grad_w0_top = grad_denom + grad_out.x / (denom + eps);
+  const float grad_w1_top = grad_denom + grad_out.y / (denom + eps);
+  const float grad_w2_top = grad_denom + grad_out.z / (denom + eps);
   const float grad_bary_x = grad_w0_top * z1 * z2;
   const float grad_bary_y = grad_w1_top * z0 * z2;
   const float grad_bary_z = grad_w2_top * z0 * z1;
