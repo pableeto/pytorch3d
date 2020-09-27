@@ -27,6 +27,7 @@ def get_extensions():
 
     force_cuda = os.getenv("FORCE_CUDA", "0") == "1"
     if (torch.cuda.is_available() and CUDA_HOME is not None) or force_cuda:
+        print('Build with CUDA....')
         extension = CUDAExtension
         sources += source_cuda
         define_macros += [("WITH_CUDA", None)]
@@ -87,9 +88,9 @@ setup(
     name="pytorch3d",
     version=__version__,
     author="FAIR",
-    url="https://github.com/facebookresearch/pytorch3d",
+    url="https://github.com/pableeto/pytorch3d",
     description="PyTorch3D is FAIR's library of reusable components "
-    "for deep Learning with 3D data.",
+    "for deep Learning with 3D data. This is a customed version by MCG team",
     packages=find_packages(exclude=("configs", "tests")),
     install_requires=["torchvision>=0.4", "fvcore"],
     extras_require={
